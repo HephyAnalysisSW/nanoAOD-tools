@@ -29,6 +29,7 @@ class jetmetUncertaintiesProducer(Module):
                  applySmearing=True,
                  applyHEMfix=False,
                  splitJER=False,
+                 sigma=1,
                  saveMETUncs=['T1', 'T1Smear']
      ):
 
@@ -45,6 +46,7 @@ class jetmetUncertaintiesProducer(Module):
             self.splitJERIDs = list(range(6))
         else:
             self.splitJERIDs = [""]  # "empty" ID for the overall JER
+        self.sigma = sigma
         self.metBranchName = metBranchName
         self.rhoBranchName = "fixedGridRhoFastjetAll"
         # --------------------------------------------------------------------
@@ -647,9 +649,9 @@ class jetmetUncertaintiesProducer(Module):
                             elif jet.eta <= -2.5 and jet.eta > -3:
                                 delta = 0.65
                         jet_pt_jesUp[jesUncertainty] = jet_pt_nom
-                        jet_pt_jesDown[jesUncertainty] = delta * jet_pt_nom
+                        jet_pt_jesDown[jesUncertainty] = self.sigma * delta * jet_pt_nom
                         jet_mass_jesUp[jesUncertainty] = jet_mass_nom
-                        jet_mass_jesDown[jesUncertainty] = delta * jet_mass_nom
+                        jet_mass_jesDown[jesUncertainty] = self.sigma * delta * jet_mass_nom
 
                         jet_pt_jesUpT1[jesUncertainty] = jet_pt_L1L2L3
                         jet_pt_jesDownT1[jesUncertainty] = delta * \
@@ -662,13 +664,13 @@ class jetmetUncertaintiesProducer(Module):
                         delta = self.jesUncertainty[
                             jesUncertainty].getUncertainty(True)
                         jet_pt_jesUp[jesUncertainty] = jet_pt_nom * \
-                            (1. + delta)
+                            (1. + self.sigma * delta)
                         jet_pt_jesDown[jesUncertainty] = jet_pt_nom * \
-                            (1. - delta)
+                            (1. - self.sigma * delta)
                         jet_mass_jesUp[jesUncertainty] = jet_mass_nom * \
-                            (1. + delta)
+                            (1. + self.sigma * delta)
                         jet_mass_jesDown[jesUncertainty] = jet_mass_nom * \
-                            (1. - delta)
+                            (1. - self.sigma * delta)
 
                         # redo JES variations for T1 MET
                         self.jesUncertainty[jesUncertainty].setJetPt(
@@ -677,9 +679,9 @@ class jetmetUncertaintiesProducer(Module):
                         delta = self.jesUncertainty[
                             jesUncertainty].getUncertainty(True)
                         jet_pt_jesUpT1[jesUncertainty] = jet_pt_L1L2L3 * \
-                            (1. + delta)
+                            (1. + self.sigma * delta)
                         jet_pt_jesDownT1[jesUncertainty] = jet_pt_L1L2L3 * \
-                            (1. - delta)
+                            (1. - self.sigma * delta)
 
                     if iJet < nJet:
                         jets_pt_jesUp[jesUncertainty].append(

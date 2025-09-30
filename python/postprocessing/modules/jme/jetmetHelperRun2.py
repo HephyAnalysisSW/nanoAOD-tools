@@ -121,7 +121,8 @@ def createJMECorrector(isMC=True,
                        isFastSim=False,
                        applyHEMfix=False,
                        splitJER=False,
-                       saveMETUncs=['T1', 'T1Smear']):
+                       saveMETUncs=['T1', 'T1Smear'],
+                       sigma=1):
 
     dataYear = str(dataYear)
 
@@ -154,7 +155,8 @@ def createJMECorrector(isMC=True,
                 applySmearing=applySmearing,
                 applyHEMfix=applyHEMfix,
                 splitJER=splitJER,
-                saveMETUncs=saveMETUncs)
+                saveMETUncs=saveMETUncs,
+                sigma=sigma)
         else:
             jmeCorrections = lambda: jetmetUncertaintiesProducer(
                 era=dataYear,
@@ -164,7 +166,8 @@ def createJMECorrector(isMC=True,
                 jerTag=jerTag_,
                 jetType=jetType,
                 metBranchName=met_,
-                isData=True)
+                isData=True,
+                sigma=sigma)
     # no MET variations calculated
     else:
         if isMC:
